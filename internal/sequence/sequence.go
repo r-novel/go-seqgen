@@ -30,24 +30,6 @@ func NewSequnce(opts ...SeqOpt) string {
 	return s
 }
 
-func RandStringBytesMaskImprSrc(n int) string {
-	b := make([]byte, n)
-	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
-	for i, cache, remain := n-1, src.Int63(), letterIdxMax; i >= 0; {
-		if remain == 0 {
-			cache, remain = src.Int63(), letterIdxMax
-		}
-		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
-			b[i] = letterBytes[idx]
-			i--
-		}
-		cache >>= letterIdxBits
-		remain--
-	}
-
-	return string(b)
-}
-
 func (s *Sequence) Generate() error {
 	if s.src == nil || s.sz == 0 {
 		return fmt.Errorf("error with allocate data;")
@@ -68,20 +50,4 @@ func (s *Sequence) Generate() error {
 	}
 
 	return nil
-}
-
-type SeqOpt func(*Sequence)
-
-func WithSize(sz uint64) SeqOpt {
-	return func(s *Sequence) {
-		s.sz = sz
-	}
-}
-
-func WithAllocate(v bool) SeqOpt {
-	return func(s *Sequence) {
-		if v {
-			s.raw = make([]byte, s.sz)
-		}
-	}
 }
