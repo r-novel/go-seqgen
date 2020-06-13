@@ -12,11 +12,9 @@ type Sequence struct {
 	src rand.Source
 }
 
-func NewSequnce(opts ...SeqOpt) string {
-	const (
-		defaultSize = 64
-		defaultSrc  = rand.NewSource(time.Now().UnixNano())
-	)
+func NewSequnce(opts ...SeqOpt) *Sequence {
+	const defaultSize = 64
+	var defaultSrc = rand.NewSource(time.Now().UnixNano())
 
 	s := &Sequence{
 		sz:  defaultSize,
@@ -24,10 +22,14 @@ func NewSequnce(opts ...SeqOpt) string {
 	}
 
 	for _, opt := range opts {
-		opt(h)
+		opt(s)
 	}
 
 	return s
+}
+
+func (s *Sequence) String() string {
+	return string(s.raw)
 }
 
 func (s *Sequence) Generate() error {
@@ -36,13 +38,13 @@ func (s *Sequence) Generate() error {
 	}
 
 	for i, cache, remain := s.sz-1,
-		s.src.Int63(), letterIdxMax; i >= 0; {
+		s.src.Int63(), letterIdxMax; i > 0; {
 		if remain == 0 {
 			cache, remain = s.src.Int63(), letterIdxMax
 		}
 
-		if idx := uint(cache & letterIdxMask); idx < len(letterBytes) {
-			s.raw[i] = letterBytes[idx]
+		if idx := int(cache & letterIdxMask); idx < len(letters) {
+			s.raw[i] = letters[idx]
 			i--
 		}
 		cache >>= letterIdxBits
