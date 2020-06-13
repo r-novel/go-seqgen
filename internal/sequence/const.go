@@ -1,4 +1,4 @@
-package seqgen
+package sequence
 
 const (
 	letters       = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_=+?;:"
